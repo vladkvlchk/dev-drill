@@ -26,7 +26,7 @@ export function QuizCard({
   return (
     <Card className="w-full h-full flex items-center justify-center relative">
       <CardContent className="text-center p-6">
-        <div className="absolute top-4 right-4 bg-primary text-primary-foreground rounded-full w-10 h-10 flex items-center justify-center">
+        <div className="absolute bottom-4 right-4 bg-primary text-primary-foreground rounded-full w-10 h-10 flex items-center justify-center">
           {pageNumber}
         </div>
         <h2 className="text-2xl font-bold mb-6">{question}</h2>
