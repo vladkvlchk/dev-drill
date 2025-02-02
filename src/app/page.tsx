@@ -1,80 +1,26 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { useSwipeable } from "react-swipeable";
-import { QuizCard } from "@/components/QuizCard";
-import { useInfiniteQuiz } from "@/hooks/useInfiniteQuiz";
-import { useDeviceType } from "@/hooks/useDeviceType";
-import {
-  ChevronUp,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState, useRef } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
+import { Button, QuizCard } from "@/components";
+import { useDeviceType, useInfiniteQuiz, useSwipeMobile } from "@/hooks";
 
 export default function Home() {
   const { questions, loading, loadMoreQuestions } = useInfiniteQuiz();
-  const [currentIndex, setCurrentIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const isMobile = useDeviceType();
 
-  const handlers = useSwipeable({
-    onSwipeStart: () => {
-      setIsDragging(true);
-    },
-    onSwiping: (eventData) => {
-      if (isDragging) {
-        const deltaY = eventData.deltaY;
-        setScrollY(deltaY);
-      }
-    },
-    onSwipedUp: () => {
-      if (currentIndex < questions.length - 1) {
-        setCurrentIndex((prevIndex) => prevIndex + 1);
-      }
-    },
-    onSwipedDown: () => {
-      if (currentIndex > 0) {
-        setCurrentIndex((prevIndex) => prevIndex - 1);
-      }
-    },
-    onSwiped: () => {
-      setIsDragging(false);
-      setScrollY(0);
-    },
-    trackMouse: true,
+  const { handlers } = useSwipeMobile({
+    itemsLength: questions.length,
+    isMobile,
+    currentIndex,
+    setCurrentIndex,
+    loadMore: loadMoreQuestions,
+    loading,
+    containerRef,
   });
-
-  useEffect(() => {
-    if (currentIndex >= questions.length - 2 && !loading) {
-      loadMoreQuestions();
-    }
-  }, [currentIndex, questions.length, loading, loadMoreQuestions]);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (container) {
-      if (isMobile) {
-        const targetY = -currentIndex * window.innerHeight;
-        container.style.transform = `translateY(${targetY + scrollY}px)`;
-      } else {
-        const targetX = -currentIndex * window.innerWidth;
-        container.style.transform = `translateX(${targetX}px)`;
-      }
-    }
-  }, [currentIndex, scrollY, isMobile]);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (container) {
-      container.style.transition = isDragging
-        ? "none"
-        : "transform 0.3s ease-out";
-    }
-  }, [isDragging]);
 
   const handlePrevious = () => {
     if (currentIndex > 0) {
@@ -124,23 +70,7 @@ export default function Home() {
           </p>
         </div>
       )}
-      {isMobile ? (
-        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 flex flex-col items-center">
-          <ChevronUp
-            className={`w-8 h-8 ${
-              currentIndex > 0 ? "text-primary" : "text-gray-300"
-            }`}
-          />
-          <span className="text-lg font-semibold my-2">Swipe</span>
-          <ChevronDown
-            className={`w-8 h-8 ${
-              currentIndex < questions.length - 1
-                ? "text-primary"
-                : "text-gray-300"
-            }`}
-          />
-        </div>
-      ) : (
+      {!isMobile && (
         <>
           <Button
             className="absolute top-4 left-4"
