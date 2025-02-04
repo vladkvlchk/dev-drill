@@ -11,16 +11,13 @@ export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const isMobile = useDeviceType();
 
-  const { data, isPending, isFetching, fetchNextPage, isError } =
-    useInfiniteQuiz();
+  const { data, isPending, fetchNextPage, isError } = useInfiniteQuiz();
   const tasks = data ? data?.pages.flatMap((page) => page) : [];
 
   const { handlers } = useSwipeMobile({
     isMobile,
     currentIndex,
     setCurrentIndex,
-    loadMore: fetchNextPage,
-    loading: isFetching,
     containerRef,
   });
 

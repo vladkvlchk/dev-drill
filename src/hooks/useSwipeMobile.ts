@@ -13,18 +13,13 @@ export const useSwipeMobile = ({
   isMobile,
   currentIndex,
   setCurrentIndex,
-  loadMore,
-  loading,
   containerRef,
 }: {
   isMobile: boolean;
   currentIndex: number;
   setCurrentIndex: Dispatch<SetStateAction<number>>;
-  loadMore: () => void;
-  loading: boolean;
   containerRef: RefObject<HTMLElement | null>;
 }) => {
-  console.log("use-swipe");
   const [scrollY, setScrollY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const queryClient = useQueryClient();
@@ -42,12 +37,7 @@ export const useSwipeMobile = ({
       }
     },
     onSwipedUp: () => {
-      console.log("on-swipe-up");
-      console.log("[on-swipe-up] currentIndex: ", currentIndex);
-      console.log("[on-swipe-up] data: ", data);
-      console.log("[on-swipe-up] tasks.length: ", tasks.length);
       if (currentIndex < tasks.length - 1) {
-        console.log("on-swipe-up's if");
         setCurrentIndex((prevIndex) => prevIndex + 1);
       }
     },
@@ -62,17 +52,6 @@ export const useSwipeMobile = ({
     },
     trackMouse: true,
   });
-
-  //   useEffect(() => {
-  //     console.log("currentIndex: ", currentIndex);
-  //     console.log("tasks.length", tasks.length);
-  //     console.log("loading", loading);
-
-  //     if (currentIndex >= tasks.length - 2 && !loading) {
-  //       console.log("loadMore!");
-  //       loadMore();
-  //     }
-  //   }, [currentIndex, tasks, loading, loadMore]);
 
   useEffect(() => {
     const container = containerRef.current;
