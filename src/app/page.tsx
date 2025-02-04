@@ -1,38 +1,38 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Button, QuizCard } from "@/components";
 import { useDeviceType, useInfiniteQuiz, useSwipeMobile } from "@/hooks";
 
 export default function Home() {
-  const { questions, loading, loadMoreQuestions } = useInfiniteQuiz();
   const containerRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const isMobile = useDeviceType();
 
+  const { data, isPending, fetchNextPage, isError } = useInfiniteQuiz();
+  const tasks = data ? data?.pages.flatMap((page) => page) : [];
+
   const { handlers } = useSwipeMobile({
-    itemsLength: questions.length,
     isMobile,
     currentIndex,
     setCurrentIndex,
-    loadMore: loadMoreQuestions,
-    loading,
     containerRef,
   });
 
-  const handlePrevious = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex((prevIndex) => prevIndex - 1);
-    }
-  };
+  useEffect(() => {
+    if (currentIndex > tasks.length - 2) fetchNextPage();
+  }, [currentIndex]);
 
-  const handleNext = () => {
-    if (currentIndex < questions.length - 1) {
-      setCurrentIndex((prevIndex) => prevIndex + 1);
-    }
-  };
+  if (isError) return <>error</>;
+  if (!data) return <>loading...</>;
+
+  const handlePrevious = () => setCurrentIndex((prevIndex) => prevIndex - 1);
+  const handleNext = () => setCurrentIndex((prevIndex) => prevIndex + 1);
+
+  const isNextDisabled = currentIndex === tasks.length - 1;
+  const isPreviousDisabled = currentIndex <= 0;
 
   return (
     <div
@@ -43,27 +43,27 @@ export default function Home() {
         ref={containerRef}
         className={`w-full ${isMobile ? "flex flex-col" : "flex flex-row"}`}
         style={{
-          height: isMobile ? `${questions.length * 100}%` : "100%",
-          width: isMobile ? "100%" : `${questions.length * 100}%`,
+          height: isMobile ? `${tasks.length * 100}%` : "100%",
+          width: isMobile ? "100%" : `${tasks.length * 100}%`,
         }}
       >
-        {questions.map((question, index) => (
+        {tasks.map((task, index) => (
           <div
-            key={question.id}
+            key={task.id + index}
             className={`${isMobile ? "h-screen" : "h-full"} ${
               isMobile ? "w-screen" : "w-screen flex-shrink-0"
             }`}
           >
             <QuizCard
-              question={question.question}
-              options={question.options}
-              correctAnswer={question.correctAnswer}
+              question={task.question}
+              options={task.options}
+              correctAnswer={task.correctAnswer}
               pageNumber={index + 1}
             />
           </div>
         ))}
       </div>
-      {loading && (
+      {isPending && (
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
           <p className="text-white bg-gray-800 px-4 py-2 rounded-full">
             Loading more questions...
@@ -75,14 +75,14 @@ export default function Home() {
           <Button
             className="absolute top-4 left-4"
             onClick={handlePrevious}
-            disabled={currentIndex === 0}
+            disabled={isPreviousDisabled}
           >
             <ChevronLeft className="mr-2 h-4 w-4" /> Previous
           </Button>
           <Button
             className="absolute top-4 right-4"
             onClick={handleNext}
-            disabled={currentIndex === questions.length - 1}
+            disabled={isNextDisabled}
           >
             Next <ChevronRight className="ml-2 h-4 w-4" />
           </Button>

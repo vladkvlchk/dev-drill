@@ -1,3 +1,5 @@
+import { TasksResponse } from "@/utils/types";
+import { InfiniteData, useQueryClient } from "@tanstack/react-query";
 import {
   useState,
   useEffect,
@@ -8,24 +10,21 @@ import {
 import { useSwipeable } from "react-swipeable";
 
 export const useSwipeMobile = ({
-  itemsLength,
   isMobile,
   currentIndex,
   setCurrentIndex,
-  loadMore,
-  loading,
   containerRef,
 }: {
-  itemsLength: number;
   isMobile: boolean;
   currentIndex: number;
   setCurrentIndex: Dispatch<SetStateAction<number>>;
-  loadMore: () => void;
-  loading: boolean;
   containerRef: RefObject<HTMLElement | null>;
 }) => {
   const [scrollY, setScrollY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const queryClient = useQueryClient();
+  const data = queryClient.getQueryData<InfiniteData<TasksResponse>>(["tasks"]);
+  const tasks = data?.pages.flatMap((page) => page) || [];
 
   const handlers = useSwipeable({
     onSwipeStart: () => {
@@ -38,7 +37,7 @@ export const useSwipeMobile = ({
       }
     },
     onSwipedUp: () => {
-      if (currentIndex < itemsLength - 1) {
+      if (currentIndex < tasks.length - 1) {
         setCurrentIndex((prevIndex) => prevIndex + 1);
       }
     },
@@ -53,12 +52,6 @@ export const useSwipeMobile = ({
     },
     trackMouse: true,
   });
-
-  useEffect(() => {
-    if (currentIndex >= itemsLength - 2 && !loading) {
-      loadMore();
-    }
-  }, [currentIndex, itemsLength, loading, loadMore]);
 
   useEffect(() => {
     const container = containerRef.current;

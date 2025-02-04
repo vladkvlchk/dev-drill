@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.1",
+    "@supabase/supabase-js": "^2.48.1",
+    "@tanstack/react-query": "^5.66.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.474.0",
@@ -22,12 +24,14 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@tanstack/eslint-plugin-query": "^5.66.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.1.6",
     "postcss": "^8",
+    "supabase": "^2.9.6",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }
