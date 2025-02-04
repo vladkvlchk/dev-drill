@@ -1,3 +1,5 @@
+import { TasksResponse } from "@/utils/types";
+import { InfiniteData, useQueryClient } from "@tanstack/react-query";
 import {
   useState,
   useEffect,
@@ -8,7 +10,6 @@ import {
 import { useSwipeable } from "react-swipeable";
 
 export const useSwipeMobile = ({
-  itemsLength,
   isMobile,
   currentIndex,
   setCurrentIndex,
@@ -16,7 +17,6 @@ export const useSwipeMobile = ({
   loading,
   containerRef,
 }: {
-  itemsLength: number;
   isMobile: boolean;
   currentIndex: number;
   setCurrentIndex: Dispatch<SetStateAction<number>>;
@@ -24,8 +24,12 @@ export const useSwipeMobile = ({
   loading: boolean;
   containerRef: RefObject<HTMLElement | null>;
 }) => {
+  console.log("use-swipe");
   const [scrollY, setScrollY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const queryClient = useQueryClient();
+  const data = queryClient.getQueryData<InfiniteData<TasksResponse>>(["tasks"]);
+  const tasks = data?.pages.flatMap((page) => page) || [];
 
   const handlers = useSwipeable({
     onSwipeStart: () => {
@@ -38,7 +42,12 @@ export const useSwipeMobile = ({
       }
     },
     onSwipedUp: () => {
-      if (currentIndex < itemsLength - 1) {
+      console.log("on-swipe-up");
+      console.log("[on-swipe-up] currentIndex: ", currentIndex);
+      console.log("[on-swipe-up] data: ", data);
+      console.log("[on-swipe-up] tasks.length: ", tasks.length);
+      if (currentIndex < tasks.length - 1) {
+        console.log("on-swipe-up's if");
         setCurrentIndex((prevIndex) => prevIndex + 1);
       }
     },
@@ -54,11 +63,16 @@ export const useSwipeMobile = ({
     trackMouse: true,
   });
 
-  useEffect(() => {
-    if (currentIndex >= itemsLength - 2 && !loading) {
-      loadMore();
-    }
-  }, [currentIndex, itemsLength, loading, loadMore]);
+  //   useEffect(() => {
+  //     console.log("currentIndex: ", currentIndex);
+  //     console.log("tasks.length", tasks.length);
+  //     console.log("loading", loading);
+
+  //     if (currentIndex >= tasks.length - 2 && !loading) {
+  //       console.log("loadMore!");
+  //       loadMore();
+  //     }
+  //   }, [currentIndex, tasks, loading, loadMore]);
 
   useEffect(() => {
     const container = containerRef.current;
