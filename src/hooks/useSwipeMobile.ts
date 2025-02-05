@@ -31,6 +31,7 @@ export const useSwipeMobile = ({
       setIsDragging(true);
     },
     onSwiping: (eventData) => {
+      eventData.event.preventDefault();
       if (isDragging) {
         const deltaY = eventData.deltaY;
         setScrollY(deltaY);
