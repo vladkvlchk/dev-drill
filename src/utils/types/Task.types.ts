@@ -4,13 +4,13 @@ export interface Task {
   id: number;
   question: string;
   options: string[];
-  correctAnswer: number;
+  correct_answer: string;
 }
 
 export interface TasksResponse {
   nextPage: null;
   id: UUID;
-  correctAnswer: number;
+  correct_answer: string;
   options: string[];
   question: string;
 

@@ -57,7 +57,7 @@ export default function Home() {
             <QuizCard
               question={task.question}
               options={task.options}
-              correctAnswer={task.correctAnswer}
+              correctAnswer={task.correct_answer}
               pageNumber={index + 1}
             />
           </div>
