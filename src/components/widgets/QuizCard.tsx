@@ -16,12 +16,6 @@ export function QuizCard({
   pageNumber,
 }: QuizCardProps) {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-  const [showResult, setShowResult] = useState(false);
-
-  const handleAnswer = (option: string) => {
-    setSelectedAnswer(option);
-    setShowResult(true);
-  };
 
   return (
     <Card className="w-full h-full flex items-center justify-center relative">
@@ -34,7 +28,7 @@ export function QuizCard({
           {options.map((option) => (
             <Button
               key={option}
-              onClick={() => handleAnswer(option)}
+              onClick={() => setSelectedAnswer(option)}
               disabled={Boolean(selectedAnswer)}
               variant={selectedAnswer === option ? "default" : "outline"}
               className={
