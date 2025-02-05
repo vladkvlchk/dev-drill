@@ -29,6 +29,7 @@ export function QuizCard({
             <Button
               key={option}
               onClick={() => setSelectedAnswer(option)}
+              onTouchStart={() => setSelectedAnswer(option)}
               disabled={Boolean(selectedAnswer)}
               variant={selectedAnswer === option ? "default" : "outline"}
               className={
