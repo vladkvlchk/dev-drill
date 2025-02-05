@@ -4,7 +4,12 @@ import { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Button, QuizCard } from "@/components";
-import { useDeviceType, useInfiniteQuiz, useSwipeMobile, useViewportHeight } from "@/hooks";
+import {
+  useDeviceType,
+  useInfiniteQuiz,
+  useSwipeMobile,
+  useViewportHeight,
+} from "@/hooks";
 
 export default function Home() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -43,7 +48,9 @@ export default function Home() {
     >
       <div
         ref={containerRef}
-        className={`w-full transition-transform duration-300 ease-out ${isMobile ? "flex flex-col" : "flex flex-row"}`}
+        className={`w-full transition-transform duration-300 ease-out ${
+          isMobile ? "flex flex-col" : "flex flex-row"
+        }`}
         style={{
           height: isMobile ? `${tasks.length * 100}%` : "100%",
           width: isMobile ? "100%" : `${tasks.length * 100}%`,
@@ -52,9 +59,8 @@ export default function Home() {
         {tasks.map((task, index) => (
           <div
             key={task.id + index}
-            className={`${isMobile ? `h-[${viewportHeight}px]` : "h-full"} ${
-              isMobile ? "w-screen" : "w-screen flex-shrink-0"
-            }`}
+            className={`${isMobile ? "w-screen" : "w-screen flex-shrink-0"}`}
+            style={{ height: `${viewportHeight}px` }}
           >
             <QuizCard
               question={task.question}
