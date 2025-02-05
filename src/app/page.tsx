@@ -41,7 +41,7 @@ export default function Home() {
     >
       <div
         ref={containerRef}
-        className={`w-full ${isMobile ? "flex flex-col" : "flex flex-row"}`}
+        className={`w-full transition-transform duration-300 ease-out ${isMobile ? "flex flex-col" : "flex flex-row"}`}
         style={{
           height: isMobile ? `${tasks.length * 100}%` : "100%",
           width: isMobile ? "100%" : `${tasks.length * 100}%`,
