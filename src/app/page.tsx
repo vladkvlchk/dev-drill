@@ -4,12 +4,14 @@ import { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Button, QuizCard } from "@/components";
-import { useDeviceType, useInfiniteQuiz, useSwipeMobile } from "@/hooks";
+import { useDeviceType, useInfiniteQuiz, useSwipeMobile, useViewportHeight } from "@/hooks";
 
 export default function Home() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+
   const isMobile = useDeviceType();
+  const viewportHeight = useViewportHeight();
 
   const { data, isPending, fetchNextPage, isError } = useInfiniteQuiz();
   const tasks = data ? data?.pages.flatMap((page) => page) : [];
@@ -50,7 +52,7 @@ export default function Home() {
         {tasks.map((task, index) => (
           <div
             key={task.id + index}
-            className={`${isMobile ? "h-screen" : "h-full"} ${
+            className={`${isMobile ? `h-[${viewportHeight}px]` : "h-full"} ${
               isMobile ? "w-screen" : "w-screen flex-shrink-0"
             }`}
           >

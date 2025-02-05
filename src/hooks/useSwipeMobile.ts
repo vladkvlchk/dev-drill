@@ -8,6 +8,7 @@ import {
   RefObject,
 } from "react";
 import { useSwipeable } from "react-swipeable";
+// import { useViewportHeight } from ".";
 
 export const useSwipeMobile = ({
   isMobile,
@@ -23,6 +24,7 @@ export const useSwipeMobile = ({
   const [scrollY, setScrollY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const queryClient = useQueryClient();
+  // const viewportHeight = useViewportHeight();
   const data = queryClient.getQueryData<InfiniteData<TasksResponse>>(["tasks"]);
   const tasks = data?.pages.flatMap((page) => page) || [];
 
