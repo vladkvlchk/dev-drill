@@ -4,10 +4,6 @@ export function useViewportHeight() {
   const [viewportHeight, setViewportHeight] = useState(0);
 
   useEffect(() => {
-    console.log("viewportHeight: ", viewportHeight);
-  }, [viewportHeight]);
-
-  useEffect(() => {
     const updateHeight = () => {
       setViewportHeight(window.visualViewport?.height || window.innerHeight);
     };

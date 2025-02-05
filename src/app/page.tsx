@@ -16,7 +16,7 @@ export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const isMobile = useDeviceType();
-  const viewportHeight = useViewportHeight();
+  const clientHeight = useViewportHeight();
 
   const { data, isPending, fetchNextPage, isError } = useInfiniteQuiz();
   const tasks = data ? data?.pages.flatMap((page) => page) : [];
@@ -26,6 +26,7 @@ export default function Home() {
     currentIndex,
     setCurrentIndex,
     containerRef,
+    clientHeight
   });
 
   useEffect(() => {
@@ -60,7 +61,7 @@ export default function Home() {
           <div
             key={task.id + index}
             className={`${isMobile ? "w-screen" : "w-screen flex-shrink-0"}`}
-            style={{ height: `${viewportHeight}px` }}
+            style={{ height: `${clientHeight}px` }}
           >
             <QuizCard
               question={task.question}

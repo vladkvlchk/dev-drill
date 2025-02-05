@@ -8,23 +8,23 @@ import {
   RefObject,
 } from "react";
 import { useSwipeable } from "react-swipeable";
-// import { useViewportHeight } from ".";
 
 export const useSwipeMobile = ({
   isMobile,
   currentIndex,
   setCurrentIndex,
   containerRef,
+  clientHeight
 }: {
   isMobile: boolean;
   currentIndex: number;
   setCurrentIndex: Dispatch<SetStateAction<number>>;
   containerRef: RefObject<HTMLElement | null>;
+  clientHeight: number;
 }) => {
   const [scrollY, setScrollY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const queryClient = useQueryClient();
-  // const viewportHeight = useViewportHeight();
   const data = queryClient.getQueryData<InfiniteData<TasksResponse>>(["tasks"]);
   const tasks = data?.pages.flatMap((page) => page) || [];
 
@@ -60,7 +60,7 @@ export const useSwipeMobile = ({
     const container = containerRef.current;
     if (container) {
       if (isMobile) {
-        const targetY = -currentIndex * document.documentElement.clientHeight;
+        const targetY = -currentIndex * clientHeight;
         container.style.transform = `translateY(${targetY + scrollY}px)`;
       } else {
         const targetX = -currentIndex * window.innerWidth;
