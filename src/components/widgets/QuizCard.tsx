@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 interface QuizCardProps {
   question: string;
   options: string[];
-  correctAnswer: number;
+  correctAnswer: string;
   pageNumber: number;
 }
 
@@ -15,13 +15,7 @@ export function QuizCard({
   correctAnswer,
   pageNumber,
 }: QuizCardProps) {
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [showResult, setShowResult] = useState(false);
-
-  const handleAnswer = (index: number) => {
-    setSelectedAnswer(index);
-    setShowResult(true);
-  };
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
 
   return (
     <Card className="w-full h-full flex items-center justify-center relative">
@@ -30,20 +24,27 @@ export function QuizCard({
           {pageNumber}
         </div>
         <h2 className="text-2xl font-bold mb-6">{question}</h2>
-        <div className="space-y-4">
-          {options.map((option, index) => (
+        <div className={"space-y-4 " + (selectedAnswer ? "" : "pb-11")}>
+          {options.map((option) => (
             <Button
-              key={index}
-              onClick={() => handleAnswer(index)}
-              disabled={showResult}
-              variant={"outline"}
-              className="w-full"
+              key={option}
+              onClick={() => setSelectedAnswer(option)}
+              disabled={Boolean(selectedAnswer)}
+              variant={selectedAnswer === option ? "default" : "outline"}
+              className={
+                "w-full " +
+                (selectedAnswer === option
+                  ? option === correctAnswer
+                    ? "bg-green-500"
+                    : "bg-pink-500"
+                  : "")
+              }
             >
               {option}
             </Button>
           ))}
         </div>
-        {showResult && (
+        {selectedAnswer && (
           <p className="mt-4 text-lg font-semibold">
             {selectedAnswer === correctAnswer ? "Correct!" : "Incorrect!"}
           </p>
