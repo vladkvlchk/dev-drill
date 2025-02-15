@@ -63,9 +63,7 @@ export const useSwipeMobile = ({
     if (container) {
       if (isMobile) {
         const targetY = -currentIndex * clientHeight;
-        container.style.transform = `translateY(calc(${
-          targetY + scrollY
-        }px + env(safe-area-inset-top)))`;
+        container.style.transform = `translateY(${targetY + scrollY}px)`;
       } else {
         const targetX = -currentIndex * window.innerWidth;
         container.style.transform = `translateX(${targetX}px)`;
