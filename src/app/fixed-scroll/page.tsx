@@ -27,6 +27,7 @@ export default function Home() {
   const isMobile = useDeviceType();
   const touchStartY = useRef(0);
   const touchEndY = useRef(0);
+  const isSwiping = useRef(false);
 
   useEffect(() => {
     if (currentIndex >= tasks.length - 2 && !isPending) {
@@ -36,13 +37,19 @@ export default function Home() {
 
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     touchStartY.current = e.touches[0].clientY;
+    touchEndY.current = e.touches[0].clientY;
+    isSwiping.current = false; // Скидаємо стан свайпу
   };
-
+  
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
     touchEndY.current = e.touches[0].clientY;
+    isSwiping.current = true; // Встановлюємо, що відбувся реальний свайп
+    e.preventDefault(); // Блокуємо дефолтну поведінку (оновлення сторінки)
   };
 
   const handleTouchEnd = () => {
+    if (!isSwiping.current) return;
+
     const diffY = touchStartY.current - touchEndY.current;
 
     if (Math.abs(diffY) < MIN_SWIPE_DISTANCE) return;
