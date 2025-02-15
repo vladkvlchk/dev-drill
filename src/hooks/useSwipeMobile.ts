@@ -1,3 +1,5 @@
+"use client";
+
 import { TasksResponse } from "@/utils/types";
 import { InfiniteData, useQueryClient } from "@tanstack/react-query";
 import {
@@ -14,7 +16,7 @@ export const useSwipeMobile = ({
   currentIndex,
   setCurrentIndex,
   containerRef,
-  clientHeight
+  clientHeight,
 }: {
   isMobile: boolean;
   currentIndex: number;
@@ -24,16 +26,30 @@ export const useSwipeMobile = ({
 }) => {
   const [scrollY, setScrollY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [viewportHeight, setViewportHeight] = useState(clientHeight);
+
   const queryClient = useQueryClient();
   const data = queryClient.getQueryData<InfiniteData<TasksResponse>>(["tasks"]);
   const tasks = data?.pages.flatMap((page) => page) || [];
+
+  useEffect(() => {
+    if (isMobile && window.visualViewport) {
+      const handleResize = () => {
+        setViewportHeight(window.visualViewport!.height);
+      };
+      window.visualViewport.addEventListener("resize", handleResize);
+      return () => {
+        window.visualViewport?.removeEventListener("resize", handleResize);
+      };
+    }
+  }, [isMobile]);
 
   const handlers = useSwipeable({
     onSwipeStart: () => {
       setIsDragging(true);
     },
     onSwiping: (eventData) => {
-      eventData.event.preventDefault();
+      // eventData.event.preventDefault();
       if (isDragging) {
         const deltaY = eventData.deltaY;
         setScrollY(deltaY);
@@ -60,14 +76,16 @@ export const useSwipeMobile = ({
     const container = containerRef.current;
     if (container) {
       if (isMobile) {
-        const targetY = -currentIndex * clientHeight;
-        container.style.transform = `translateY(${targetY + scrollY}px)`;
+        const targetY = -currentIndex * viewportHeight;
+        container.style.transform = `translateY(calc(${
+          targetY + scrollY
+        }px + env(safe-area-inset-top)))`;
       } else {
         const targetX = -currentIndex * window.innerWidth;
         container.style.transform = `translateX(${targetX}px)`;
       }
     }
-  }, [currentIndex, scrollY, isMobile]);
+  }, [currentIndex, scrollY, isMobile, viewportHeight]);
 
   useEffect(() => {
     const container = containerRef.current;
