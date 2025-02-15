@@ -1,69 +1,95 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useInfiniteQuiz } from "@/hooks/useInfiniteQuiz";
+import { useDeviceType } from "@/hooks/useDeviceType";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
-import { Badge, Button, QuizCard } from "@/components";
-import {
-  useBrowserInfo,
-  useDeviceType,
-  useInfiniteQuiz,
-  useSwipeMobile,
-  useViewportHeight,
-} from "@/hooks";
+import { Button } from "@/components/ui/button";
+import { QuizCard } from "@/components";
 
 export default function Home() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const isMobile = useDeviceType();
-  const browser = useBrowserInfo();
-  const clientHeight = useViewportHeight();
-
   const { data, isPending, fetchNextPage, isError } = useInfiniteQuiz();
   const tasks = data ? data?.pages.flatMap((page) => page) : [];
 
-  const { handlers } = useSwipeMobile({
-    isMobile,
-    currentIndex,
-    setCurrentIndex,
-    containerRef,
-    clientHeight,
-  });
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isMobile = useDeviceType();
 
   useEffect(() => {
-    if (currentIndex > tasks.length - 2) fetchNextPage();
-  }, [currentIndex]);
+    if (currentIndex >= tasks.length - 2 && !isPending) {
+      fetchNextPage();
+    }
+  }, [currentIndex, tasks.length, isPending, fetchNextPage]);
 
-  if (isError) return <>error</>;
-  if (!data) return <>loading...</>;
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container && isMobile) {
+      container.scrollTo({
+        top: currentIndex * window.innerHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [currentIndex, isMobile]);
 
-  const handlePrevious = () => setCurrentIndex((prevIndex) => prevIndex - 1);
-  const handleNext = () => setCurrentIndex((prevIndex) => prevIndex + 1);
+  const handleScroll = () => {
+    const container = containerRef.current;
+    if (container && isMobile) {
+      const newIndex = Math.round(container.scrollTop / window.innerHeight);
+      if (newIndex !== currentIndex) {
+        setCurrentIndex(newIndex);
+      }
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex((prevIndex) => prevIndex - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentIndex < tasks.length - 1) {
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    }
+  };
 
   const isNextDisabled = currentIndex === tasks.length - 1;
   const isPreviousDisabled = currentIndex <= 0;
 
+  if (isError) return <>error</>;
+  if (!data) return <>loading...</>;
+
   return (
-    <div
-      className="h-screen w-screen overflow-hidden relative"
-      {...(isMobile ? handlers : {})}
-    >
+    <div className="h-screen w-screen overflow-hidden relative">
       <div
         ref={containerRef}
-        className={`w-full transition-transform duration-300 ease-out ${
-          isMobile ? "flex flex-col" : "flex flex-row"
+        className={`w-full h-full ${
+          isMobile
+            ? "overflow-y-auto overflow-x-hidden snap-y snap-mandatory"
+            : "flex flex-row"
         }`}
         style={{
-          height: isMobile ? `${tasks.length * 100}%` : "100%",
-          width: isMobile ? "100%" : `${tasks.length * 100}%`,
+          scrollSnapType: isMobile ? "y mandatory" : "none",
+          scrollBehavior: "smooth",
         }}
+        onScroll={isMobile ? handleScroll : undefined}
       >
         {tasks.map((task, index) => (
           <div
             key={task.id + index}
-            className={`${isMobile ? "w-screen" : "w-screen flex-shrink-0"}`}
-            style={{ height: `${clientHeight}px` }}
+            className={`${
+              isMobile
+                ? "h-screen w-screen snap-start"
+                : "h-full w-screen flex-shrink-0"
+            }`}
+            style={
+              !isMobile
+                ? {
+                    transform: `translateX(-${currentIndex * 100}%)`,
+                    transition: "transform 0.3s ease-out",
+                  }
+                : undefined
+            }
           >
             <QuizCard
               question={task.question}
@@ -74,13 +100,7 @@ export default function Home() {
           </div>
         ))}
       </div>
-      {isPending && (
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
-          <p className="text-white bg-gray-800 px-4 py-2 rounded-full">
-            Loading more questions...
-          </p>
-        </div>
-      )}
+
       {!isMobile && (
         <>
           <Button
@@ -98,13 +118,6 @@ export default function Home() {
             Next <ChevronRight className="ml-2 h-4 w-4" />
           </Button>
         </>
-      )}
-
-      {/* Browser tag */}
-      {browser && (
-        <Badge className="absolute left-1/2 -translate-x-1/2 top-[calc(env(safe-area-inset-top)+16px)]">
-          {browser}
-        </Badge>
       )}
     </div>
   );
