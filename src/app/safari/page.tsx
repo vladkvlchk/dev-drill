@@ -14,7 +14,7 @@ import { QuizCard } from "@/components";
 
 export default function Home() {
   //   const { questions, loading, loadMoreQuestions } = useInfiniteQuiz()
-  const { data, isPending, fetchNextPage, isError } = useInfiniteQuiz();
+  const { data, isPending, fetchNextPage } = useInfiniteQuiz();
   const tasks = data ? data?.pages.flatMap((page) => page) : [];
 
   const [currentIndex, setCurrentIndex] = useState(0);
