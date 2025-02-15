@@ -1,7 +1,7 @@
 import { UUID } from "crypto";
 
-export interface Task {
-  id: number;
+export interface ITask {
+  id: UUID;
   question: string;
   options: string[];
   correct_answer: string;
