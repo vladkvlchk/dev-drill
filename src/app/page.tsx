@@ -3,8 +3,9 @@
 import { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-import { Button, QuizCard } from "@/components";
+import { Badge, Button, QuizCard } from "@/components";
 import {
+  useBrowserInfo,
   useDeviceType,
   useInfiniteQuiz,
   useSwipeMobile,
@@ -16,6 +17,7 @@ export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const isMobile = useDeviceType();
+  const browser = useBrowserInfo();
   const clientHeight = useViewportHeight();
 
   const { data, isPending, fetchNextPage, isError } = useInfiniteQuiz();
@@ -26,7 +28,7 @@ export default function Home() {
     currentIndex,
     setCurrentIndex,
     containerRef,
-    clientHeight
+    clientHeight,
   });
 
   useEffect(() => {
@@ -96,6 +98,13 @@ export default function Home() {
             Next <ChevronRight className="ml-2 h-4 w-4" />
           </Button>
         </>
+      )}
+
+      {/* Browser tag */}
+      {browser && (
+        <Badge className="absolute left-1/2 -translate-x-1/2 top-4">
+          {browser}
+        </Badge>
       )}
     </div>
   );
