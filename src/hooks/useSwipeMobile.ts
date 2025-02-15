@@ -26,30 +26,16 @@ export const useSwipeMobile = ({
 }) => {
   const [scrollY, setScrollY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [viewportHeight, setViewportHeight] = useState(clientHeight);
-
   const queryClient = useQueryClient();
   const data = queryClient.getQueryData<InfiniteData<TasksResponse>>(["tasks"]);
   const tasks = data?.pages.flatMap((page) => page) || [];
-
-  useEffect(() => {
-    if (isMobile && window.visualViewport) {
-      const handleResize = () => {
-        setViewportHeight(window.visualViewport!.height);
-      };
-      window.visualViewport.addEventListener("resize", handleResize);
-      return () => {
-        window.visualViewport?.removeEventListener("resize", handleResize);
-      };
-    }
-  }, [isMobile]);
 
   const handlers = useSwipeable({
     onSwipeStart: () => {
       setIsDragging(true);
     },
     onSwiping: (eventData) => {
-      // eventData.event.preventDefault();
+      eventData.event.preventDefault();
       if (isDragging) {
         const deltaY = eventData.deltaY;
         setScrollY(deltaY);
@@ -76,7 +62,7 @@ export const useSwipeMobile = ({
     const container = containerRef.current;
     if (container) {
       if (isMobile) {
-        const targetY = -currentIndex * viewportHeight;
+        const targetY = -currentIndex * clientHeight;
         container.style.transform = `translateY(calc(${
           targetY + scrollY
         }px + env(safe-area-inset-top)))`;
@@ -85,7 +71,7 @@ export const useSwipeMobile = ({
         container.style.transform = `translateX(${targetX}px)`;
       }
     }
-  }, [currentIndex, scrollY, isMobile, viewportHeight]);
+  }, [currentIndex, scrollY, isMobile]);
 
   useEffect(() => {
     const container = containerRef.current;

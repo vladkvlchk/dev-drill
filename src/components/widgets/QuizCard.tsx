@@ -18,7 +18,7 @@ export function QuizCard({
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
 
   return (
-    <Card className="w-full h-full flex items-center justify-center relative">
+    <Card className="w-full h-[calc(100vh+env(safe-area-inset-top))] flex items-center justify-center relative">
       <CardContent className="text-center p-6">
         <div className="absolute bottom-4 right-4 bg-primary text-primary-foreground rounded-full w-10 h-10 flex items-center justify-center">
           {pageNumber}
