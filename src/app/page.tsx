@@ -102,7 +102,7 @@ export default function Home() {
 
       {/* Browser tag */}
       {browser && (
-        <Badge className="absolute left-1/2 -translate-x-1/2 top-4">
+        <Badge className="absolute left-1/2 -translate-x-1/2 top-[calc(env(safe-area-inset-top)+16px)]">
           {browser}
         </Badge>
       )}
