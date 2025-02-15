@@ -4,9 +4,8 @@
 
 html,
 body {
-  /* overscroll-behavior: none; */
-  /* touch-action: manipulation; */
-  min-height: 100dvh;
+  overscroll-behavior: none;
+  touch-action: manipulation;
 }
 
 body {

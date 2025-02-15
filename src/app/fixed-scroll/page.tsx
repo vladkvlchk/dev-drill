@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, type TouchEvent, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { QuizCard } from "@/components";
 import { useInfiniteQuiz } from "@/hooks/useInfiniteQuiz";
 import { useDeviceType } from "@/hooks/useDeviceType";
@@ -11,6 +11,8 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+const MIN_SWIPE_DISTANCE = 50;
 
 export default function Home() {
   const { data, isPending, fetchNextPage, isError } = useInfiniteQuiz();
@@ -32,22 +34,23 @@ export default function Home() {
     }
   }, [currentIndex, tasks.length, isPending, fetchNextPage]);
 
-  const handleTouchStart = (e: TouchEvent<HTMLDivElement>) => {
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     touchStartY.current = e.touches[0].clientY;
   };
 
-  const handleTouchMove = (e: TouchEvent<HTMLDivElement>) => {
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
     touchEndY.current = e.touches[0].clientY;
   };
 
   const handleTouchEnd = () => {
     const diffY = touchStartY.current - touchEndY.current;
-    if (Math.abs(diffY) > 50) {
-      if (diffY > 0 && currentIndex < tasks.length - 1) {
-        setCurrentIndex((prevIndex) => prevIndex + 1);
-      } else if (diffY < 0 && currentIndex > 0) {
-        setCurrentIndex((prevIndex) => prevIndex - 1);
-      }
+
+    if (Math.abs(diffY) < MIN_SWIPE_DISTANCE) return;
+
+    if (diffY > 0 && currentIndex < tasks.length - 1) {
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+    } else if (diffY < 0 && currentIndex > 0) {
+      setCurrentIndex((prevIndex) => prevIndex - 1);
     }
   };
 
@@ -63,9 +66,28 @@ export default function Home() {
     }
   };
 
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const preventPullToRefresh = (e: TouchEvent) => {
+      if (e.touches[0].clientY > touchStartY.current && window.scrollY === 0) {
+        e.preventDefault();
+      }
+    };
+
+    container.addEventListener("touchmove", preventPullToRefresh, {
+      passive: false,
+    });
+
+    return () => {
+      container.removeEventListener("touchmove", preventPullToRefresh);
+    };
+  }, []);
+
   if (isError) return <>error</>;
   if (!data) return <>loading...</>;
-  
+
   return (
     <div className="fixed inset-0 overflow-hidden">
       <div
@@ -75,6 +97,7 @@ export default function Home() {
           transform: `translate${isMobile ? "Y" : "X"}(-${
             currentIndex * 100
           }%)`,
+          touchAction: "none",
         }}
         onTouchStart={isMobile ? handleTouchStart : undefined}
         onTouchMove={isMobile ? handleTouchMove : undefined}
