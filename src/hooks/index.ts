@@ -1,5 +1,6 @@
 export * from "./useBrowserInfo";
+export * from "./useCurrentCardIndex";
 export * from "./useDeviceType";
 export * from "./useInfiniteQuiz";
-export * from "./useSwipeMobile";
+export * from "./useMobileSwap";
 export * from "./useViewportHeight";

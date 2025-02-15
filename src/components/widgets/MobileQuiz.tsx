@@ -1,45 +1,40 @@
 "use client";
 
-import { useEffect } from "react";
+import { QuizCard } from "@/components";
+import { ITask } from "@/utils/types";
+import { useMobileSwap } from "@/hooks/useMobileSwap";
+import { useCurrentCardIndex } from "@/hooks";
 
-import { QuizProps } from "@/utils/types";
-import { QuizCard } from "./QuizCard";
+export interface MobileQuizProps {
+  tasks: ITask[];
+  containerRef: React.RefObject<HTMLDivElement | null>;
+}
 
-export function MobileQuiz({
-  tasks,
-  currentIndex,
-  setCurrentIndex,
-  containerRef,
-}: QuizProps) {
-  useEffect(() => {
-    const container = containerRef.current;
-    if (container) {
-      container.scrollTo({
-        top: currentIndex * window.innerHeight,
-        behavior: "smooth",
-      });
-    }
-  }, [currentIndex, containerRef]);
-
-  const handleScroll = () => {
-    const container = containerRef.current;
-    if (container) {
-      const newIndex = Math.round(container.scrollTop / window.innerHeight);
-      if (newIndex !== currentIndex) {
-        setCurrentIndex(newIndex);
-      }
-    }
-  };
+export function MobileQuiz({ tasks, containerRef }: MobileQuizProps) {
+  const { handleTouchStart, handleTouchMove, handleTouchEnd } =
+    useMobileSwap(containerRef);
+  const { currentCardIndex } = useCurrentCardIndex();
 
   return (
     <div
       ref={containerRef}
-      className="w-full h-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory"
-      style={{ scrollSnapType: "y mandatory", scrollBehavior: "smooth" }}
-      onScroll={handleScroll}
+      className="h-full w-full relative transition-transform duration-300 ease-out"
+      style={{
+        transform: `translateY(-${currentCardIndex * 100}%)`,
+        touchAction: "none",
+      }}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
       {tasks.map((task, index) => (
-        <div key={task.id + index} className="h-screen w-screen snap-start">
+        <div
+          key={task.id + index}
+          className="absolute top-0 left-0 h-full w-full"
+          style={{
+            transform: `translateY(${index * 100}%)`,
+          }}
+        >
           <QuizCard
             question={task.question}
             options={task.options}
