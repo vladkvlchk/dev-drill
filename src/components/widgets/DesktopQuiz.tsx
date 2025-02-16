@@ -46,6 +46,7 @@ export function DesktopQuiz({ tasks, containerRef }: DesktopQuizProps) {
               options={task.options}
               correctAnswer={task.correct_answer}
               pageNumber={index + 1}
+              difficulty={task.level_name}
             />
           </div>
         ))}

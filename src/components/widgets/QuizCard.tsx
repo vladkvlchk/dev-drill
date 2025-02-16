@@ -4,7 +4,8 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TopicBadge } from "../atoms/TopicBadge";
-import { TTopic } from "@/utils/types";
+import { TDifficulty, TTopic } from "@/utils/types";
+import { DifficultyBadge } from "../atoms";
 
 interface QuizCardProps {
   topic: TTopic;
@@ -12,9 +13,11 @@ interface QuizCardProps {
   options: string[];
   correctAnswer: string;
   pageNumber: number;
+  difficulty: TDifficulty;
 }
 
 export function QuizCard({
+  difficulty,
   topic,
   question,
   options,
@@ -25,8 +28,11 @@ export function QuizCard({
 
   return (
     <Card className="w-full h-[calc(100vh+env(safe-area-inset-top))] flex items-center justify-center rounded-none relative">
-      <CardHeader className="absolute top-[calc(env(safe-area-inset-top)+4px)]">
-        <TopicBadge variant={topic} />
+      <CardHeader className="absolute top-2">
+        <div className="flex gap-2">
+          <TopicBadge variant={topic} />
+          <DifficultyBadge variant={difficulty} />
+        </div>
       </CardHeader>
       <CardContent className="text-center p-6">
         <div className="absolute bottom-4 right-4 bg-primary text-primary-foreground rounded-full w-10 h-10 flex items-center justify-center">
