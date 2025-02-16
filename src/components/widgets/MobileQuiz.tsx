@@ -36,6 +36,7 @@ export function MobileQuiz({ tasks, containerRef }: MobileQuizProps) {
           }}
         >
           <QuizCard
+            topic={task.topic_name}
             question={task.question}
             options={task.options}
             correctAnswer={task.correct_answer}

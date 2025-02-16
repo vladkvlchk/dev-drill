@@ -1,5 +1,6 @@
 export * from "./props";
 
-export * from "./database.types";
+export * from "./database";
 
-export * from "./Task.types";
+export * from "./Task";
+export * from "./Topic";

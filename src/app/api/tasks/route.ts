@@ -1,4 +1,4 @@
-import { Database } from "@/utils/types/database.types";
+import { Database } from "@/utils/types/database";
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
@@ -8,7 +8,7 @@ const supabase = createClient<Database>(
 );
 
 export async function GET() {
-  const { data, error } = await supabase.rpc("get_random_tasks", { lim: 10 });
+  const { data, error } = await supabase.rpc("get_random_tasks_3", { lim: 10 });
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

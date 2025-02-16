@@ -1,5 +1,5 @@
 import { RefObject } from "react";
-import { ITask } from "../Task.types";
+import { ITask } from "../Task";
 
 export interface QuizProps {
   tasks: ITask[];

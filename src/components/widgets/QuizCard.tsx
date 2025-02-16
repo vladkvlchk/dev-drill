@@ -1,10 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { TopicBadge } from "../atoms/TopicBadge";
+import { TTopic } from "@/utils/types";
 
 interface QuizCardProps {
+  topic: TTopic;
   question: string;
   options: string[];
   correctAnswer: string;
@@ -12,6 +15,7 @@ interface QuizCardProps {
 }
 
 export function QuizCard({
+  topic,
   question,
   options,
   correctAnswer,
@@ -20,7 +24,10 @@ export function QuizCard({
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
 
   return (
-    <Card className="w-full h-[calc(100vh+env(safe-area-inset-top))] flex items-center justify-center relative">
+    <Card className="w-full h-[calc(100vh+env(safe-area-inset-top))] flex items-center justify-center rounded-none relative">
+      <CardHeader className="absolute top-[calc(env(safe-area-inset-top)+4px)]">
+        <TopicBadge variant={topic} />
+      </CardHeader>
       <CardContent className="text-center p-6">
         <div className="absolute bottom-4 right-4 bg-primary text-primary-foreground rounded-full w-10 h-10 flex items-center justify-center">
           {pageNumber}

@@ -1,0 +1,1 @@
+export type TTopic = 'html' | 'css' | 'javascript' | 'typescript' | 'oop' | 'react' | 'next';

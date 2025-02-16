@@ -12,10 +12,7 @@ export interface DesktopQuizProps {
   containerRef: React.RefObject<HTMLDivElement | null>;
 }
 
-export function DesktopQuiz({
-  tasks,
-  containerRef,
-}: DesktopQuizProps) {
+export function DesktopQuiz({ tasks, containerRef }: DesktopQuizProps) {
   const { currentCardIndex, setCurrentCardIndex } = useCurrentCardIndex();
 
   useEffect(() => {
@@ -44,6 +41,7 @@ export function DesktopQuiz({
         {tasks.map((task, index) => (
           <div key={task.id + index} className="h-full w-screen flex-shrink-0">
             <QuizCard
+              topic={task.topic_name}
               question={task.question}
               options={task.options}
               correctAnswer={task.correct_answer}

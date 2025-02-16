@@ -1,8 +1,8 @@
-import { TasksResponse } from "@/utils/types";
+import { ITasksResponse } from "@/utils/types";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 export function useInfiniteQuiz() {
-  return useInfiniteQuery<TasksResponse, Error>({
+  return useInfiniteQuery<ITasksResponse, Error>({
     queryKey: ["tasks"],
     queryFn: async ({ pageParam = 1 }) => {
       const res = await fetch(`/api/tasks?page=${pageParam}`);
