@@ -36,6 +36,7 @@ export function MobileQuiz({ tasks, containerRef }: MobileQuizProps) {
           }}
         >
           <QuizCard
+            difficulty={task.level_name}
             topic={task.topic_name}
             question={task.question}
             options={task.options}

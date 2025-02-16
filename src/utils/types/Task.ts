@@ -1,8 +1,10 @@
 import { UUID } from "crypto";
 import { TTopic } from "./Topic";
+import { TDifficulty } from "./Difficulty";
 
 export interface ITask {
   id: UUID;
+  level_name: TDifficulty;
   topic_name: TTopic;
   question: string;
   options: string[];
