@@ -12,7 +12,6 @@ import {
   Checkbox,
   Sheet,
   SheetContent,
-  SheetTitle,
   SheetTrigger,
 } from "../ui";
 import { AppRoutes } from "@/utils/appRoutes";
@@ -21,7 +20,8 @@ import { capitalize } from "@/utils/helper/capitalize";
 
 export const SideMenu: FC = () => {
   const { parsedFilters } = useFilters();
-  const { tempFilters, setTempFilters, applyFilters } = useFiltersStore();
+  const { tempFilters, setTempFilters, applyFilters, resetTempFilters } =
+    useFiltersStore();
   const { setCurrentCardIndex } = useCurrentCardIndex();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -35,6 +35,8 @@ export const SideMenu: FC = () => {
         : [...tempFilters[filterKey], id],
     });
   };
+
+  const onClickResetFilters = () => resetTempFilters();
 
   const handleClose = () => {
     if (!isOpen) return setIsOpen(true);
@@ -50,7 +52,9 @@ export const SideMenu: FC = () => {
         <MenuIcon />
       </SheetTrigger>
       <SheetContent>
-        <SheetTitle className="mb-4">DEV DRILL</SheetTitle>
+        <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0 mb-4">
+          DEV DRILL
+        </h2>
         <Link href={AppRoutes.Auth}>
           <Button variant="secondary" className="w-full justify-start">
             <KeyRoundIcon />
@@ -58,7 +62,15 @@ export const SideMenu: FC = () => {
           </Button>
         </Link>
 
-        <div className="mt-4">
+        <div className="mt-8">
+          <div className="flex justify-between items-center">
+            <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+              Filters:
+            </h4>
+            <Button variant="outline" onClick={onClickResetFilters}>
+              reset filters
+            </Button>
+          </div>
           <Accordion type="single" collapsible>
             {parsedFilters.map((filter, index) => (
               <AccordionItem key={index} value={`item-${index}`}>

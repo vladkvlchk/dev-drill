@@ -11,6 +11,7 @@ interface FiltersState {
   };
   setTempFilters: (filters: Partial<FiltersState["tempFilters"]>) => void;
   applyFilters: () => void;
+  resetTempFilters: () => void;
 }
 
 export const useFiltersStore = create<FiltersState>((set) => ({
@@ -33,4 +34,13 @@ export const useFiltersStore = create<FiltersState>((set) => ({
       types: state.tempFilters.types,
     }));
   },
+  resetTempFilters: () =>
+    set((state) => ({
+      ...state,
+      tempFilters: {
+        topics: [],
+        difficulties: [],
+        types: [],
+      },
+    })),
 }));
