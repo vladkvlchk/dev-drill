@@ -27,7 +27,7 @@ export function QuizCard({
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
 
   return (
-    <Card className="w-full h-[calc(100vh+env(safe-area-inset-top))] flex items-center justify-center rounded-none relative">
+    <Card className="w-full h-[calc(100vh+env(safe-area-inset-top))] flex items-center justify-center rounded-none relative border-none">
       <CardHeader className="absolute top-2">
         <div className="flex gap-2">
           <TopicBadge variant={topic} />

@@ -8,7 +8,7 @@ const supabase = createClient<Database>(
 );
 
 export async function GET() {
-  const { data, error } = await supabase.rpc("get_random_tasks", { lim: 10 });
+  const { data, error } = await supabase.rpc("get_filters");
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

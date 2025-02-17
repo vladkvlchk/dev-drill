@@ -1,5 +1,6 @@
-import { ITasksResponse } from "@/utils/types";
 import { useInfiniteQuery } from "@tanstack/react-query";
+
+import { ITasksResponse } from "@/utils/types";
 
 export function useInfiniteQuiz() {
   return useInfiniteQuery<ITasksResponse, Error>({
