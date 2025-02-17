@@ -1,14 +1,20 @@
-import { Database } from "@/utils/types/database";
-import { createClient } from "@supabase/supabase-js";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { supabase } from "../supabase-client";
 
-const supabase = createClient<Database>(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
 
-export async function GET() {
-  const { data, error } = await supabase.rpc("get_random_tasks_3", { lim: 10 });
+  const topicIds = searchParams.get("topicIds")?.split(",") ?? null;
+  const levelIds = searchParams.get("levelIds")?.split(",") ?? null;
+  const typeIds = searchParams.get("typeIds")?.split(",") ?? null;
+  const limit = Number(searchParams.get("lim")) || 10;
+
+  const { data, error } = await supabase.rpc("get_random_tasks_test", {
+    lim: limit,
+    topic_ids: topicIds,
+    level_ids: levelIds,
+    type_ids: typeIds,
+  });
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

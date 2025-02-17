@@ -35,6 +35,21 @@ export function DesktopQuiz({ tasks, containerRef }: DesktopQuizProps) {
     }
   };
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "ArrowLeft") {
+        handlePrevious();
+      } else if (event.key === "ArrowRight") {
+        handleNext();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [currentCardIndex]);
+
   return (
     <>
       <div ref={containerRef} className="h-full w-full flex flex-row">
@@ -52,18 +67,20 @@ export function DesktopQuiz({ tasks, containerRef }: DesktopQuizProps) {
         ))}
       </div>
       <Button
-        className="absolute top-4 left-4 z-10"
+        className="absolute top-1/2 -translate-y-1/2 left-4 z-10"
         onClick={handlePrevious}
         disabled={currentCardIndex === 0}
+        size="icon"
       >
-        <ChevronLeft className="mr-2 h-4 w-4" /> Previous
+        <ChevronLeft />
       </Button>
       <Button
-        className="absolute top-4 right-4 z-10"
+        className="absolute top-1/2 -translate-y-1/2 right-4 z-10"
         onClick={handleNext}
         disabled={currentCardIndex === tasks.length - 1}
+        size="icon"
       >
-        Next <ChevronRight className="ml-2 h-4 w-4" />
+        <ChevronRight />
       </Button>
     </>
   );
