@@ -1,7 +1,8 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { KeyRoundIcon, MenuIcon } from "lucide-react";
 import Link from "next/link";
-import { useFiltersStore } from "@/store/useFiltersStore";
+
+import { useFiltersStore } from "@/store/filtersStore";
 import {
   Accordion,
   AccordionContent,
@@ -15,15 +16,36 @@ import {
   SheetTrigger,
 } from "../ui";
 import { AppRoutes } from "@/utils/appRoutes";
-import { useFilters } from "@/hooks";
+import { useCurrentCardIndex, useFilters } from "@/hooks";
 import { capitalize } from "@/utils/helper/capitalize";
 
 export const SideMenu: FC = () => {
   const { parsedFilters } = useFilters();
-  const { selectedFilters, toggleFilter } = useFiltersStore();
+  const { tempFilters, setTempFilters, applyFilters } = useFiltersStore();
+  const { setCurrentCardIndex } = useCurrentCardIndex();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleCheckboxChange = (
+    filterKey: keyof typeof tempFilters,
+    id: string
+  ) => {
+    setTempFilters({
+      [filterKey]: tempFilters[filterKey].includes(id)
+        ? tempFilters[filterKey].filter((item) => item !== id)
+        : [...tempFilters[filterKey], id],
+    });
+  };
+
+  const handleClose = () => {
+    if (!isOpen) return setIsOpen(true);
+
+    applyFilters();
+    setCurrentCardIndex(0);
+    setIsOpen(false);
+  };
 
   return (
-    <Sheet>
+    <Sheet open={isOpen} onOpenChange={handleClose}>
       <SheetTrigger className="absolute right-4 top-4 z-10">
         <MenuIcon />
       </SheetTrigger>
@@ -48,12 +70,12 @@ export const SideMenu: FC = () => {
                     <div key={item.id} className="flex items-center space-x-2">
                       <Checkbox
                         id={item.id}
-                        checked={selectedFilters[
-                          filter.filterName.toLowerCase() as keyof typeof selectedFilters
-                        ]?.includes(item.id)}
+                        checked={tempFilters[
+                          filter.filterName as keyof typeof tempFilters
+                        ].includes(item.id)}
                         onCheckedChange={() =>
-                          toggleFilter(
-                            filter.filterName.toLowerCase() as keyof typeof selectedFilters,
+                          handleCheckboxChange(
+                            filter.filterName as keyof typeof tempFilters,
                             item.id
                           )
                         }

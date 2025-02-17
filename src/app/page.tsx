@@ -4,7 +4,6 @@ import { useEffect, useRef, useMemo } from "react";
 
 import { useInfiniteQuiz, useDeviceType, useCurrentCardIndex } from "@/hooks";
 import { MobileQuiz, DesktopQuiz } from "@/components";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function Home() {
   const { data, isPending, fetchNextPage, isError } = useInfiniteQuiz();

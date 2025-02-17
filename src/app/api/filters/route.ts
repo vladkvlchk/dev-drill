@@ -1,11 +1,6 @@
-import { Database } from "@/utils/types/database";
-import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
-const supabase = createClient<Database>(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+import { supabase } from "../supabase-client";
 
 export async function GET() {
   const { data, error } = await supabase.rpc("get_filters");
